@@ -53,7 +53,7 @@ The goal of this lab is to build your first JUnit test case for a BPMN 2.0 proce
    ```java
    @Deployment(resources = "your bpmn file.bpmn")
    ```
-   annotation. The annotation has to be added to the testHappyPath method. Specify the correct file name for your BPMN model.
+   annotation. The annotation has to be added to the test class. Specify the correct file name for your BPMN model.
 7. Add the ProcessEngineExtension as a JUnit 5 extension to the test class.
    ```java
    @ExtendWith(ProcessEngineCoverageExtension.class)
