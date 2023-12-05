@@ -20,7 +20,6 @@ The goal of this lab is to build your first JUnit test case for a BPMN 2.0 proce
     <dependency>
       <groupId>org.camunda.bpm.extension</groupId>
       <artifactId>camunda-bpm-junit5</artifactId>
-      <version>1.0.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -38,7 +37,7 @@ The goal of this lab is to build your first JUnit test case for a BPMN 2.0 proce
     <dependency>
       <groupId>org.camunda.bpm.extension</groupId>
       <artifactId>camunda-bpm-process-test-coverage-junit5</artifactId>
-      <version>1.0.3</version>
+      <version>2.0.0</version>
       <scope>test</scope>
     </dependency>    
    ```
@@ -75,7 +74,7 @@ The goal of this lab is to build your first JUnit test case for a BPMN 2.0 proce
     ```xml
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-      <bean id="processEngineConfiguration" class="org.camunda.bpm.extension.process_test_coverage.engine.ProcessCoverageInMemProcessEngineConfiguration">
+      <bean id="processEngineConfiguration" class="org.camunda.community.process_test_coverage.engine.platform7.ProcessCoverageInMemProcessEngineConfiguration">
         <property name="history" value="full" />
         <property name="expressionManager">
           <bean class="org.camunda.bpm.engine.test.mock.MockExpressionManager"/>
