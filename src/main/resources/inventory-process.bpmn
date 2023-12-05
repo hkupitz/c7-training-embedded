@@ -12,7 +12,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0hb580n" sourceRef="Activity_17wpm3m" targetRef="Gateway_0xp1ng9" />
     <bpmn:sequenceFlow id="Flow_1w3xrs6" name="yes" sourceRef="Gateway_0xp1ng9" targetRef="Gateway_184n1ak">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${orderItemsNum == availableItemsNum}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${orderItemsNum &lt;= availableItemsNum}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_1whk0ja" name="Inventory completed">
       <bpmn:incoming>Flow_10snj2o</bpmn:incoming>
@@ -28,15 +28,15 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1hbx4lc" sourceRef="Gateway_184n1ak" targetRef="Activity_04mg6h2" />
     <bpmn:sequenceFlow id="Flow_1n6y268" sourceRef="Activity_0lm6gzc" targetRef="Gateway_184n1ak" />
-    <bpmn:serviceTask id="Activity_17wpm3m" name="Check availability" camunda:type="external" camunda:topic="availabilityCheck">
+    <bpmn:serviceTask id="Activity_17wpm3m" name="Check availability" camunda:class="io.camunda.training.delegates.ExampleDelegate">
       <bpmn:incoming>Flow_1cbsyfq</bpmn:incoming>
       <bpmn:outgoing>Flow_0hb580n</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0lm6gzc" name="Remove unavailable items" camunda:type="external" camunda:topic="itemRemoval">
+    <bpmn:serviceTask id="Activity_0lm6gzc" name="Remove unavailable items" camunda:class="io.camunda.training.delegates.ExampleDelegate">
       <bpmn:incoming>Flow_1pgbj5d</bpmn:incoming>
       <bpmn:outgoing>Flow_1n6y268</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_04mg6h2" name="Reserve available items" camunda:type="external" camunda:topic="itemReservation">
+    <bpmn:serviceTask id="Activity_04mg6h2" name="Reserve available items" camunda:class="io.camunda.training.delegates.ExampleDelegate">
       <bpmn:incoming>Flow_1hbx4lc</bpmn:incoming>
       <bpmn:outgoing>Flow_10snj2o</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -72,6 +72,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1lc4hzz_di" bpmnElement="Activity_04mg6h2">
         <dc:Bounds x="720" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1cbsyfq_di" bpmnElement="Flow_1cbsyfq">
         <di:waypoint x="215" y="177" />
