@@ -10,9 +10,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-    <camunda.version>7.20.0-ee</camunda.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <camunda.version>7.20.2-ee</camunda.version>
   </properties>
 
   <repositories>
@@ -121,7 +121,7 @@
     <dependency>
       <groupId>org.camunda.bpm.assert</groupId>
       <artifactId>camunda-bpm-assert</artifactId>
-      <version>12.0.0</version>
+      <version>13.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
