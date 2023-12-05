@@ -36,11 +36,11 @@ The goal of this lab is to build your first JUnit test case for a BPMN 2.0 proce
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.camunda.community.process_test_coverage</groupId>
-      <artifactId>camunda-process-test-coverage-junit5-platform-7</artifactId>
-      <version>2.0.0</version>
+      <groupId>org.camunda.bpm.extension</groupId>
+      <artifactId>camunda-bpm-process-test-coverage-junit5</artifactId>
+      <version>1.0.3</version>
       <scope>test</scope>
-    </dependency>
+    </dependency>    
    ```
 3. Open the JUnit test class `ProcessTests.java` from the folder `src/test/java` and inspect the content.
 4. Prepare your IDE to handle the static imports of `camunda-bpm-assert` and `assertJ`. In Eclipse go to **Window > Preferences > Java > Editor > Content Assist > Favorites > New Type...** and add the following types: `org.camunda.bpm.engine.test.assertions.ProcessEngineTests` and `org.assertj.core.api.Assertions`. Also, go to **Window > Preferences > Java > Code Style > Organize Imports** and set "Number of static imports needed for .\*" to "0". IntelliJ should pick up the **pom.xml** updates and prompt you to import the changes.
@@ -75,7 +75,7 @@ The goal of this lab is to build your first JUnit test case for a BPMN 2.0 proce
     ```xml
     <?xml version="1.0" encoding="UTF-8"?>
     <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-      <bean id="processEngineConfiguration" class="org.camunda.bpm.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+      <bean id="processEngineConfiguration" class="org.camunda.bpm.extension.process_test_coverage.engine.ProcessCoverageInMemProcessEngineConfiguration">
         <property name="history" value="full" />
         <property name="expressionManager">
           <bean class="org.camunda.bpm.engine.test.mock.MockExpressionManager"/>
