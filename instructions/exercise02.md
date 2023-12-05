@@ -20,6 +20,7 @@ The goal of this lab is to build your first JUnit test case for a BPMN 2.0 proce
     <dependency>
       <groupId>org.camunda.bpm.extension</groupId>
       <artifactId>camunda-bpm-junit5</artifactId>
+      <version>1.1.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -37,7 +38,7 @@ The goal of this lab is to build your first JUnit test case for a BPMN 2.0 proce
     <dependency>
       <groupId>org.camunda.bpm.extension</groupId>
       <artifactId>camunda-bpm-process-test-coverage-junit5</artifactId>
-      <version>2.0.0</version>
+      <version>2.3.1</version>
       <scope>test</scope>
     </dependency>    
    ```
