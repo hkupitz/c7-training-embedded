@@ -1,4 +1,4 @@
-package com.camunda.training.services;
+package io.camunda.training.services;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

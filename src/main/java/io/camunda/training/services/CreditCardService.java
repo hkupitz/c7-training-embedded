@@ -1,4 +1,4 @@
-package com.camunda.training.services;
+package io.camunda.training.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
