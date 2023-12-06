@@ -40,10 +40,10 @@ In this lab, you will throw an exception and then refactor the process to handle
   ```
 3. Add some example code to throw an exception if an expired credit card should be charged. Add this snippet to the execute method between the LOG statements.
     ```java
-	if (validateExpiryDate(expiryDate) == false) {
-	  System.out.println("expiry date " + expiryDate + " is invalid");
-	  throw new IllegalArgumentException("invalid expiry date");
-	}
+		if (validateExpiryDate(expiryDate) == false) {
+		  System.out.println("expiry date " + expiryDate + " is invalid");
+		  throw new IllegalArgumentException("invalid expiry date");
+		}
     ```
 4. In the process model, select the service task **charge credit card** and tick `Asynchronous continuations > Before`.
 5. Insert another test in the unit test class:
@@ -74,8 +74,8 @@ In this lab, you will throw an exception and then refactor the process to handle
 5. Run all tests. Some of them fail. Why?
 6. Correct the not-running tests by adding a manual job execution to pass the **Charge credit card** activity.
    ```java
-   // assert that the process is waiting at charge credit card
-   assertThat(processInstance).isWaitingAt("Activity_Charge_Credit_Card");
-   execute(job());
+	   // assert that the process is waiting at charge credit card
+	   assertThat(processInstance).isWaitingAt("Activity_Charge_Credit_Card");
+	   execute(job());
    ```
 7. Now, all tests are ok again.
