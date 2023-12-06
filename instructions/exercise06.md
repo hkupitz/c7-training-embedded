@@ -48,24 +48,27 @@ In this lab, you will throw an exception and then refactor the process to handle
 4. In the process model, select the service task **charge credit card** and tick `Asynchronous continuations > Before`.
 5. Insert another test in the unit test class:
     ```java
-    @Test
-    @Deployment(resources = "payment_process.bpmn")
-    public void testInvalidExpiryDate(){
-      Mocks.register("paymentCompletion", (JavaDelegate) execution -> {});
-      // Create a HashMap to put in variables for the process instance
-      Map<String, Object> variables = new HashMap<String, Object>();
-      variables.put("orderTotal", 30.00);
-      variables.put("customerId", "cust20");
-      variables.put("cardNumber", "1234 5678");
-      variables.put("CVC", "789");
-      variables.put("expiryDate", "09/24x");
-      // Start process with Java API and variables
-      ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("PaymentProcess", variables);
-      // try to execute credit card payment
-      assertThat(processInstance).isWaitingAt("Activity_Charge_Credit_Card");
-      RuntimeException exception = assertThrows(IllegalArgumentException.class, () -> execute(job()));
-      assertThat(exception).hasMessage("Expiry date invalid!");
-    }
+		@Test
+		@Deployment(resources = "payment_process.bpmn")
+		public void testInvalidExpiryDate(){
+		  Mocks.register("paymentCompletion", (JavaDelegate) execution -> {});
+		  
+		  // Create a HashMap to put in variables for the process instance
+		  Map<String, Object> variables = new HashMap<String, Object>();
+		  variables.put("orderTotal", 30.00);
+		  variables.put("customerId", "cust20");
+		  variables.put("cardNumber", "1234 5678");
+		  variables.put("CVC", "789");
+		  variables.put("expiryDate", "09/24x");
+		  
+		  // Start process with Java API and variables
+		  ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("PaymentProcess", variables);
+		  
+		  // try to execute credit card payment
+		  assertThat(processInstance).isWaitingAt("Activity_Charge_Credit_Card");
+		  RuntimeException exception = assertThrows(IllegalArgumentException.class, () -> execute(job()));
+		  assertThat(exception).hasMessage("Expiry date invalid!");
+		}
     ```
 4. Run only this test. This should work.
 5. Run all tests. Some of them fail. Why?
