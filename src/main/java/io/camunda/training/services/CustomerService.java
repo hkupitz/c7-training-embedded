@@ -35,7 +35,7 @@ public class CustomerService {
       openAmount = amount - credit;
       deductedCredit = credit;
     }
-    LOG.info("charged {} from the credit, open amount is {}", deductedCredit, openAmount);
+    LOG.info("Charged {} from the credit, open amount is {}", deductedCredit, openAmount);
     return openAmount;
   }
 
@@ -52,7 +52,7 @@ public class CustomerService {
     if (matcher.matches() && matcher.group(2) != null && matcher.group(2).length() > 0) {
       credit = Double.valueOf(matcher.group(2));
     }
-    LOG.info("customer {} has credit of {}", customerId, credit);
+    LOG.info("Customer {} has a credit of {}", customerId, credit);
     return credit;
   }
 

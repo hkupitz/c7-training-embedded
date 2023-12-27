@@ -4,10 +4,6 @@
     <bpmn:startEvent id="Event_1mna7bg" name="Payment requested">
       <bpmn:outgoing>Flow_1tt4f9z</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:task id="Activity_12rhp49" name="Deduct credit">
-      <bpmn:incoming>Flow_1tt4f9z</bpmn:incoming>
-      <bpmn:outgoing>Flow_1hbje95</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_1tt4f9z" sourceRef="Event_1mna7bg" targetRef="Activity_12rhp49" />
     <bpmn:exclusiveGateway id="Gateway_0s9wa0x" name="Credit sufficient?">
       <bpmn:incoming>Flow_1hbje95</bpmn:incoming>
@@ -21,20 +17,24 @@
       <bpmn:outgoing>Flow_1od1vtb</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1dluzzw" name="Yes" sourceRef="Gateway_0s9wa0x" targetRef="Gateway_1vqj9k7">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{orderTotal &lt;= customerCredit}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{openAmount == 0}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:task id="Activity_18nimdc" name="Charge credit card">
-      <bpmn:incoming>Flow_006930a</bpmn:incoming>
-      <bpmn:outgoing>Flow_0fbuegy</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_006930a" name="No" sourceRef="Gateway_0s9wa0x" targetRef="Activity_18nimdc">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{orderTotal &gt; customerCredit}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{openAmount &gt; 0}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0fbuegy" sourceRef="Activity_18nimdc" targetRef="Gateway_1vqj9k7" />
     <bpmn:endEvent id="Event_16lmymz" name="Payment completed">
       <bpmn:incoming>Flow_1od1vtb</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1od1vtb" sourceRef="Gateway_1vqj9k7" targetRef="Event_16lmymz" />
+    <bpmn:serviceTask id="Activity_12rhp49" name="Deduct credit" camunda:delegateExpression="${deductCredit}">
+      <bpmn:incoming>Flow_1tt4f9z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hbje95</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_18nimdc" name="Charge credit card" camunda:delegateExpression="${chargeCreditCard}">
+      <bpmn:incoming>Flow_006930a</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fbuegy</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PaymentProcess">
@@ -44,19 +44,11 @@
           <dc:Bounds x="195" y="175" width="50" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_12rhp49_di" bpmnElement="Activity_12rhp49">
-        <dc:Bounds x="290" y="110" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0s9wa0x_di" bpmnElement="Gateway_0s9wa0x" isMarkerVisible="true">
         <dc:Bounds x="445" y="125" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="428" y="101" width="83" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_18nimdc_di" bpmnElement="Activity_18nimdc">
-        <dc:Bounds x="560" y="220" width="100" height="80" />
-        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1vqj9k7_di" bpmnElement="Gateway_1vqj9k7" isMarkerVisible="true">
         <dc:Bounds x="715" y="125" width="50" height="50" />
@@ -66,6 +58,12 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="804" y="175" width="52" height="27" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hqllzg_di" bpmnElement="Activity_12rhp49">
+        <dc:Bounds x="290" y="110" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1aa1hdv_di" bpmnElement="Activity_18nimdc">
+        <dc:Bounds x="560" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1tt4f9z_di" bpmnElement="Flow_1tt4f9z">
         <di:waypoint x="238" y="150" />
