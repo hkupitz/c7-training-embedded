@@ -27,6 +27,20 @@ public class ProcessTests {
   }
 
   @Test
+  public void testHappyPath() {
+    Map<String, Object> variables = new HashMap<>();
+    variables.put("openAmount", 0);
+
+    ProcessInstance processInstance = runtimeService().createProcessInstanceByKey("PaymentProcess")
+      .startAfterActivity(findId("Deduct credit"))
+      .setVariables(variables)
+      .execute();
+
+    assertThat(processInstance).isEnded()
+      .hasNotPassed(findId("Charge credit card"));
+  }
+
+  @Test
   public void testCreditCardPath() {
 
     // Create a HashMap to put in variables for the process instance
