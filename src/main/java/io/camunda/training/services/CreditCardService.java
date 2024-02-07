@@ -36,7 +36,10 @@ public class CreditCardService {
     LOG.info("Charging card {} that expires on {} and has the CVC {} with an amount of {}",
       cardNumber, expiryDate, cvc, amount);
 
+    if (!validateExpiryDate(expiryDate)) {
+      throw new IllegalArgumentException("Invalid expiry date");
+    }
+
     LOG.info("Payment completed");
   }
-
 }

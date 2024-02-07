@@ -4,6 +4,8 @@ import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.runtimeS
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.execute;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.job;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.withVariables;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.camunda.training.delegates.ChargeCreditCardDelegate;
 import io.camunda.training.delegates.DeductCreditDelegate;
@@ -22,7 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@Deployment(resources = { "payment.bpmn", "order.bpmn" })
+@Deployment(resources = {"order.bpmn", "payment.bpmn"})
 @ExtendWith(ProcessEngineCoverageExtension.class)
 public class ProcessTests {
 
@@ -36,7 +38,8 @@ public class ProcessTests {
 
   @Test
   public void testHappyPath() {
-    Mocks.register("paymentCompletion", (JavaDelegate) execution -> {});
+    Mocks.register("paymentCompletion", (JavaDelegate) execution -> {
+    });
 
     Map<String, Object> variables = new HashMap<>();
     variables.put("openAmount", 0);
@@ -52,7 +55,8 @@ public class ProcessTests {
 
   @Test
   public void testCreditCardPath() {
-    Mocks.register("paymentCompletion", (JavaDelegate) execution -> {});
+    Mocks.register("paymentCompletion", (JavaDelegate) execution -> {
+    });
 
     // Create a HashMap to put in variables for the process instance
     Map<String, Object> variables = new HashMap<>();
@@ -69,8 +73,36 @@ public class ProcessTests {
     assertThat(processInstance).isStarted();
     execute(job());
 
+    assertThat(processInstance).isWaitingAt(findId("Charge credit card"));
+    execute(job());
+
     // Make assertions on the process instance
     assertThat(processInstance).isEnded().hasPassed(findId("Charge credit card"));
+  }
+
+  @Test
+  public void testInvalidExpiryDate() {
+    Mocks.register("paymentCompletion", (JavaDelegate) execution -> {});
+
+    // Create a HashMap to put in variables for the process instance
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("orderTotal", 30.00);
+    variables.put("customerId", "cust20");
+    variables.put("cardNumber", "1234 5678");
+    variables.put("CVC", "789");
+    variables.put("expiryDate", "09/24x");
+
+    // Start process with Java API and variables
+    ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("PaymentProcess",
+      variables);
+
+    assertThat(processInstance).isStarted();
+    execute(job());
+
+    // try to execute credit card payment
+    assertThat(processInstance).isWaitingAt(findId("Charge credit card"));
+    RuntimeException exception = assertThrows(IllegalArgumentException.class, () -> execute(job()));
+    assertEquals(exception.getMessage(), "Invalid expiry date");
   }
 
   @Test
