@@ -3,6 +3,7 @@ import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.findId;
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.runtimeService;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.execute;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.job;
+import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.processInstanceQuery;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.withVariables;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -82,7 +83,8 @@ public class ProcessTests {
 
   @Test
   public void testInvalidExpiryDate() {
-    Mocks.register("paymentCompletion", (JavaDelegate) execution -> {});
+    Mocks.register("paymentCompletion", (JavaDelegate) execution -> {
+    });
 
     // Create a HashMap to put in variables for the process instance
     Map<String, Object> variables = new HashMap<String, Object>();
@@ -107,7 +109,8 @@ public class ProcessTests {
 
   @Test
   public void testOrderProcess() {
-    Mocks.register("paymentRequest", (JavaDelegate) execution -> {});
+    Mocks.register("paymentRequest", (JavaDelegate) execution -> {
+    });
 
     ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("OrderProcess",
       "Test 1", withVariables(
@@ -120,5 +123,28 @@ public class ProcessTests {
 
     runtimeService().correlateMessage("paymentCompletedMessage");
     assertThat(processInstance).isEnded();
+  }
+
+  @Test
+  public void testEndToEnd() {
+    ProcessInstance orderProcessInstance = runtimeService().startProcessInstanceByKey(
+      "OrderProcess", "Test 1",
+      withVariables("orderTotal", 30.00,
+        "customerId", "cust30",
+        "cardNumber", "1234 5678",
+        "CVC", "123",
+        "expiryDate", "09/24"
+      )
+    );
+
+    ProcessInstance paymentProcessInstance = processInstanceQuery()
+      .processDefinitionKey("PaymentProcess")
+      .singleResult();
+
+    assertThat(paymentProcessInstance).isWaitingAt(findId("Payment requested"));
+    execute(job());
+
+    assertThat(paymentProcessInstance).isEnded();
+    assertThat(orderProcessInstance).isEnded();
   }
 }
