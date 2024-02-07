@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0u37fp4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.19.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+  <bpmn:process id="OrderProcess" name="Order process" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="StartEvent_1" name="Order received">
+      <bpmn:outgoing>Flow_1horl5n</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1horl5n" sourceRef="StartEvent_1" targetRef="Activity_0ztgeza" />
+    <bpmn:sendTask id="Activity_0ztgeza" name="Invoke payment" camunda:delegateExpression="#{paymentRequest}">
+      <bpmn:incoming>Flow_1horl5n</bpmn:incoming>
+      <bpmn:outgoing>Flow_1sosk3s</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="Flow_1sosk3s" sourceRef="Activity_0ztgeza" targetRef="Event_0kanadz" />
+    <bpmn:intermediateCatchEvent id="Event_0kanadz" name="Payment completed">
+      <bpmn:incoming>Flow_1sosk3s</bpmn:incoming>
+      <bpmn:outgoing>Flow_13eh2tl</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_036hhoe" messageRef="Message_1br09p2" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="Event_0eei70i" name="Order completed">
+      <bpmn:incoming>Flow_13eh2tl</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_13eh2tl" sourceRef="Event_0kanadz" targetRef="Event_0eei70i" />
+  </bpmn:process>
+  <bpmn:message id="Message_1br09p2" name="paymentCompletedMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="OrderProcess">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="160" y="142" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mw37or_di" bpmnElement="Activity_0ztgeza">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1wrw038_di" bpmnElement="Event_0kanadz">
+        <dc:Bounds x="432" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="424" y="142" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0eei70i_di" bpmnElement="Event_0eei70i">
+        <dc:Bounds x="532" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="509" y="142" width="83" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1horl5n_di" bpmnElement="Flow_1horl5n">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sosk3s_di" bpmnElement="Flow_1sosk3s">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="432" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13eh2tl_di" bpmnElement="Flow_13eh2tl">
+        <di:waypoint x="468" y="117" />
+        <di:waypoint x="532" y="117" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
