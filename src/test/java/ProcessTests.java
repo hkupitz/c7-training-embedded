@@ -25,7 +25,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@Deployment(resources = {"order.bpmn", "payment.bpmn"})
 @ExtendWith(ProcessEngineCoverageExtension.class)
 public class ProcessTests {
 
@@ -38,6 +37,7 @@ public class ProcessTests {
   }
 
   @Test
+  @Deployment(resources = {"payment.bpmn"})
   public void testHappyPath() {
     Mocks.register("paymentCompletion", (JavaDelegate) execution -> {
     });
@@ -55,6 +55,7 @@ public class ProcessTests {
   }
 
   @Test
+  @Deployment(resources = {"payment.bpmn"})
   public void testCreditCardPath() {
     Mocks.register("paymentCompletion", (JavaDelegate) execution -> {
     });
@@ -82,6 +83,7 @@ public class ProcessTests {
   }
 
   @Test
+  @Deployment(resources = {"payment.bpmn"})
   public void testInvalidExpiryDate() {
     Mocks.register("paymentCompletion", (JavaDelegate) execution -> {
     });
@@ -103,11 +105,14 @@ public class ProcessTests {
 
     // try to execute credit card payment
     assertThat(processInstance).isWaitingAt(findId("Charge credit card"));
-    RuntimeException exception = assertThrows(IllegalArgumentException.class, () -> execute(job()));
-    assertEquals(exception.getMessage(), "Invalid expiry date");
+    execute(job());
+
+    assertThat(processInstance).hasPassed(findId("Payment failed"))
+      .hasNotPassed(findId("Payment completed"));
   }
 
   @Test
+  @Deployment(resources = {"order.bpmn"})
   public void testOrderProcess() {
     Mocks.register("paymentRequest", (JavaDelegate) execution -> {
     });
@@ -126,6 +131,7 @@ public class ProcessTests {
   }
 
   @Test
+  @Deployment(resources = {"order.bpmn", "payment.bpmn"})
   public void testEndToEnd() {
     ProcessInstance orderProcessInstance = runtimeService().startProcessInstanceByKey(
       "OrderProcess", "Test 1",

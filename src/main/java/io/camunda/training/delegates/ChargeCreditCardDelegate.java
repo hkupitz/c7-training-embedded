@@ -3,6 +3,8 @@ package io.camunda.training.delegates;
 import io.camunda.training.services.CreditCardService;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import net.bytebuddy.pool.TypePool.Resolution.Illegal;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
@@ -26,6 +28,10 @@ public class ChargeCreditCardDelegate implements JavaDelegate {
     Double amount = (Double) execution.getVariable("openAmount");
 
     // Execute business logic using the variables
-    creditCardService.chargeAmount(cardNumber, cvc, expiryData, amount);
+    try {
+      creditCardService.chargeAmount(cardNumber, cvc, expiryData, amount);
+    } catch (IllegalArgumentException e) {
+      throw new BpmnError("chargingError", "We failed to charge credit card with card number " + cardNumber, e);
+    }
   }
 }
