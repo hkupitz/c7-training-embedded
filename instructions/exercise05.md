@@ -97,15 +97,18 @@ You create a new process model to handle orders. The payment gets started by rec
    @Test
    @Deployment(resources = "order_process.bpmn")
    public void testOrderProcess() {
-     // I will not start the other process now
+
+     // Not starting the payment process for this test
      Mocks.register("paymentRequest", (JavaDelegate) execution -> {});
+
      ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("OrderProcess", "Test 1", withVariables(
-     "orderTotal",        30.00,
-     "customerId",        "cust30",
-     "cardNumber",        "1234 5678",
-     "CVC",        "123",
-     "expiryDate",        "09/24"
+      "orderTotal", 30.00,
+      "customerId", "cust30",
+      "cardNumber", "1234 5678",
+      "CVC", "123",
+      "expiryDate", "09/26"
      ));
+     
      runtimeService().correlateMessage("paymentCompletedMessage");
      assertThat(processInstance).isEnded();
    }

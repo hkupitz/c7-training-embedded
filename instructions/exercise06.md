@@ -42,7 +42,7 @@ In this lab, you will throw an exception and then refactor the process to handle
 ```java
 if (validateExpiryDate(expiryDate) == false) {
   System.out.println("expiry date " + expiryDate + " is invalid");
-  throw new IllegalArgumentException("invalid expiry date");
+  throw new IllegalArgumentException("Expiry date invalid!");
 }
 ```
 4. In the process model, select the service task **charge credit card** and tick `Asynchronous continuations > Before`.
@@ -59,7 +59,7 @@ public void testInvalidExpiryDate(){
   variables.put("customerId", "cust20");
   variables.put("cardNumber", "1234 5678");
   variables.put("CVC", "789");
-  variables.put("expiryDate", "09/24x");
+  variables.put("expiryDate", "09/26x");
   
   // Start process with Java API and variables
   ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("PaymentProcess", variables);

@@ -21,16 +21,11 @@ In this lab, we will write an end-to-end test for the order process and the paym
       ProcessInstance processInstance = runtimeService().startProcessInstanceByKey(
         "OrderProcess",
         "Test 1",
-        withVariables("orderTotal",
-          30.00,
-          "customerId",
-          "cust30",
-          "cardNumber",
-          "1234 5678",
-          "CVC",
-          "123",
-          "expiryDate",
-          "09/24"
+        withVariables("orderTotal", 30.00,
+          "customerId", "cust30",
+          "cardNumber", "1234 5678",
+          "CVC", "123",
+          "expiryDate", "09/26"
         )
       );
       assertThat(processInstance).isEnded();
