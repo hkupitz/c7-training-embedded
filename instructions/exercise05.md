@@ -64,42 +64,44 @@ You create a new process model to handle orders. The payment process gets invoke
 7. Change the end event to a Message End Event. Fill the Implementation with type `DelegateExpression` and Delegate expression `${paymentCompletion}`.
 8. Create another delegate that sends a message back to the origin process. The correlation happens via businessKey in this implementation.
    ```java
-  package io.camunda.training.delegates;
+    package io.camunda.training.delegates;
 
-  import org.camunda.bpm.engine.delegate.DelegateExecution;
-  import org.camunda.bpm.engine.delegate.JavaDelegate;
-  import org.springframework.stereotype.Component;
+    import org.camunda.bpm.engine.delegate.DelegateExecution;
+    import org.camunda.bpm.engine.delegate.JavaDelegate;
+    import org.springframework.stereotype.Component;
 
-  @Component("completePayment")
-  public class CompletePaymentDelegate implements JavaDelegate {
+    @Component("completePayment")
+    public class CompletePaymentDelegate implements JavaDelegate {
 
-      @Override
-      public void execute(DelegateExecution execution) throws Exception {
-          String orderId = execution.getProcessBusinessKey();
+        @Override
+        public void execute(DelegateExecution execution) throws Exception {
+            String orderId = execution.getProcessBusinessKey();
 
-          execution.getProcessEngineServices()
-                  .getRuntimeService()
-                  .createMessageCorrelation("paymentCompletionMessage")
-                  .setVariables(execution.getVariables())
-                  .processInstanceBusinessKey(orderId)
-                  .correlate();
-      }
-  }
-   ```
+            execution.getProcessEngineServices()
+                    .getRuntimeService()
+                    .createMessageCorrelation("paymentCompletionMessage")
+                    .setVariables(execution.getVariables())
+                    .processInstanceBusinessKey(orderId)
+                    .correlate();
+        }
+    }
+    ```
 
 ### Acceptance testing
 
 11. Start a process instance from the modeler using this payload:
+
     ```json
-  {
-    "customerId": { "value": "cust20" },
-    "orderTotal": { "value": 40, "type": "Double" },
-    "cardNumber": { "value": "1234 5678" },
-    "cvc": { "value": "123" },
-    "expiryDate": { "value": "08/26" }
-  }
+    {
+      "customerId": { "value": "cust20" },
+      "orderTotal": { "value": 40, "type": "Double" },
+      "cardNumber": { "value": "1234 5678" },
+      "cvc": { "value": "123" },
+      "expiryDate": { "value": "08/26" }
+    }
     ```
     What happens?
+
 12. Enable "Async After" for the message start event in the payment process. Now both process instances should get started sequentially and run through correctly.
 
 ⚠️Without an asynchronous continuation, the order process instance has not been persisted in the Camunda database yet. Message correlation does not work in-memory, but needs a persisted process instance state.
@@ -108,7 +110,7 @@ You create a new process model to handle orders. The payment process gets invoke
 
 8. Adjust the `@Deployment` annotation: `@Deployment(resources = {"payment.bpmn", "order.bpmn"})`
 9. Create a new test method `testOrderProcess`. Don't forget the `@Test` annotation:
-   ```java
+```java
    @Test
    @Deployment(resources = "order.bpmn")
    public void testOrderProcess() {
@@ -127,7 +129,7 @@ You create a new process model to handle orders. The payment process gets invoke
      runtimeService().correlateMessage("paymentCompletedMessage");
      assertThat(processInstance).isEnded();
    }
-   ```
+```
 10. Extend the `setup()` method in your unit test class to register all mocks:
    ```java  
       Mocks.register("invokePayment", new InvokePaymentDelegate());
