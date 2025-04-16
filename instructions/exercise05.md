@@ -61,7 +61,7 @@ You create a new process model to handle orders. The payment process gets invoke
 ### Message receiving
 
 6. Open the Modeler and open the payment process. Change the start event to a Message Start Event. Open the Message section in the property panel and add a new Global message reference. Enter **paymentRequestMessage** as Name.
-7. Change the end event to a Message End Event. Fill the Implementation with type `DelegateExpression` and Delegate expression `${paymentCompletion}`.
+7. Change the end event to a Message End Event. Fill the Implementation with type `DelegateExpression` and Delegate expression `${completePayment}`.
 8. Create another delegate that sends a message back to the origin process. The correlation happens via businessKey in this implementation.
    ```java
     package io.camunda.training.delegates;
@@ -79,7 +79,7 @@ You create a new process model to handle orders. The payment process gets invoke
 
             execution.getProcessEngineServices()
                     .getRuntimeService()
-                    .createMessageCorrelation("paymentCompletionMessage")
+                    .createMessageCorrelation("paymentCompletedMessage")
                     .setVariables(execution.getVariables())
                     .processInstanceBusinessKey(orderId)
                     .correlate();
@@ -133,11 +133,11 @@ You create a new process model to handle orders. The payment process gets invoke
 10. Extend the `setup()` method in your unit test class to register all mocks:
    ```java  
       Mocks.register("invokePayment", new InvokePaymentDelegate());
-      Mocks.register("completePayment", new CompletePaymentDelegate())
+      Mocks.register("completePayment", new CompletePaymentDelegate());
    ```
    At the same time, add the following line at the top of both `testCreditCardPath` and `testCreditSufficientPath`:
    ```java
-   Mocks.register("paymentCompletion", (JavaDelegate) ex -> {});
+   Mocks.register("completePayment", (JavaDelegate) ex -> {});
    ```
 11. Add the following snippet after starting the process instance in your `testCreditCardPath()` method to trigger the job (async after) programmatically:
   ```java
