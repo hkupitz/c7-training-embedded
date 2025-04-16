@@ -4,7 +4,7 @@ Template for the Camunda Training for Developers using an embedded engine.
 
 ## Maven Setup for Enterprise Version
 
-his template is ready to be used with the Camunda Enterprise version. You need to configure your Maven to access the artefacts from the private repository [https://artifacts.camunda.com/artifactory/private/](https://artifacts.camunda.com/artifactory/private/).
+This template is ready to be used with the Camunda Enterprise version. You need to configure your Maven to access the artifacts from the private repository [https://artifacts.camunda.com/artifactory/private/](https://artifacts.camunda.com/artifactory/private/).
 
 ### Company wide mirror available
 
@@ -28,7 +28,7 @@ there is a good chance that you don't need any additional setup.
 If you want to setup your personal environment only for this training, the most easy way is to configure a setting locally in your IDE workspace.
 The [camunda-settings.xml](camunda-settings.xml) serves as a template. Open it in an editor.
 If your computer uses a proxy to connect to the internet, add the proxy credentials in line 13 and 14. If not, delete the `proxies` section in lines 8 to 19.
-In your license information you find a username and password to access the Camunda nexus server. 
+In your license information you will find a username and password to access the Camunda Nexus server. 
 Fill in the `username` and `password` in the server section for `camunda-bpm-nexus-ee` with the data from the email. 
 
 #### Settings in Eclipse

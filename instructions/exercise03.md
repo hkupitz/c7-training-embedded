@@ -1,94 +1,92 @@
-# Enhance with variable handling
+# Add data handling
 
 ## Goal
 
-In this lab, we will improve the variable handling by adding service tasks and their implementations. Then, we will adjust the Junit test
-
-## Short description
-
-* Morph tasks to be service tasks
-* Bind service tasks to implementations
-* Create implementations and bind them to the context
-* Adjust conditional expressions on sequence flows
-* Adjust the Junit test to use the new variable handling
+In this lab, we will add data handling by adding service tasks and their implementations. Then, we will adjust the process test.
 
 ## Detailed steps
 
-1. In the process model, choose the 2 tasks and morph them to be service tasks. You can achieve this by clicking on each task, selecting the wrench icon in the context and then select `Service Task`.
-2. After the tasks are morphed, select each task again and define an implementation of type `Delegate expression`. Name one `${deductCredit}` and the other one `${chargeCreditCard}`.
-3. In your Java project, create a new Java class. Name it `DeductCreditDelegate`:
+1. In the process model, choose the two tasks and transform them into Service Tasks. You can achieve this by clicking on each task, selecting the wrench icon in the context and then clicking on `Service Task`.
+2. After the tasks are transformed, select each task again and define an "Implementation" of the type `Delegate expression`. Enter `${deductCredit}` for the first and `${chargeCreditCard}` for the second service task.
+3. In your Maven project, create a new Java class under the `org.camunda.training.delegates` package. Name it `DeductCreditDelegate`:
    ```java
-   package org.camunda.training;
+package io.camunda.training.delegates;
 
-   import com.camunda.training.services.CustomerService;
-   import org.camunda.bpm.engine.delegate.DelegateExecution;
-   import org.camunda.bpm.engine.delegate.JavaDelegate;
-   
-   import javax.inject.Inject;
-   import javax.inject.Named;
-   
-   @Named("deductCredit")
-   public class DeductCreditDelegate implements JavaDelegate {
-     private final CustomerService service;
-   
-     @Inject
-     public DeductCreditDelegate(CustomerService service) {
-       this.service = service;
-     }
-   
-     @Override
-     public void execute(DelegateExecution execution) throws Exception {
+import io.camunda.training.services.CustomerService;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.stereotype.Component;
 
-       // Extract variables from process instance
-       String customerId = (String) execution.getVariable("customerId");
-       Double amount = (Double) execution.getVariable("orderTotal");
+@Component("deductCredit")
+public class DeductCreditDelegate implements JavaDelegate {
+    private final CustomerService service;
+    
+    public DeductCreditDelegate(CustomerService service) {
+        this.service = service;
+    }
 
-       // Execute business logic using the variables
-       Double openAmount = service.deductCredit(customerId, amount);
-       Double customerCredit = service.getCustomerCredit(customerId);
+    @Override
+    public void execute(DelegateExecution execution) throws Exception {
 
-       // Save the results to the process instance
-       execution.setVariable("openAmount", openAmount);
-       execution.setVariable("customerCredit", customerCredit);
-     }
-   }
+        // Extract variables from process instance
+        String customerId = (String) execution.getVariable("customerId");
+        Double amount = (Double) execution.getVariable("orderTotal");
+
+        // Execute business logic using the variables
+        Double openAmount = service.deductCredit(customerId, amount);
+        Double customerCredit = service.getCustomerCredit(customerId);
+
+        // Save the results to the process instance
+        execution.setVariable("openAmount", openAmount);
+        execution.setVariable("customerCredit", customerCredit);
+    }
+}
    ```
-4. Create another Java class right next to it called `ChargeCreditCardDelegate`:
+4. Create another Java class called `ChargeCreditCardDelegate`:
    ```java
-   package org.camunda.training;
+package io.camunda.training.delegates;
 
-   import org.camunda.bpm.engine.delegate.DelegateExecution;
-   import org.camunda.bpm.engine.delegate.JavaDelegate;
-   import org.camunda.training.services.CreditCardService;
-   
-   import javax.inject.Inject;
-   import javax.inject.Named;
-   
-   @Named("chargeCreditCard")
-   public class ChargeCreditCardDelegate implements JavaDelegate {
-     private final CreditCardService creditCardService;
-   
-     @Inject
-     public ChargeCreditCardDelegate(CreditCardService creditCardService) {
-       this.creditCardService = creditCardService;
-     }
-   
-     @Override
-     public void execute(DelegateExecution execution) {
+import io.camunda.training.services.CreditCardService;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.stereotype.Component;
 
-       // Extract variables from process instance
-       String cardNumber = (String) execution.getVariable("cardNumber");
-       String cvc = (String) execution.getVariable("CVC");
-       String expiryData = (String) execution.getVariable("expiryDate");
-       Double amount = (Double) execution.getVariable("openAmount");
+@Component("chargeCreditCard")
+public class ChargeCreditCardDelegate implements JavaDelegate {
+    private final CreditCardService service;
+    
+    public ChargeCreditCardDelegate(CreditCardService service) {
+        this.service = service;
+    }
 
-       // Execute business logic using the variables
-       creditCardService.chargeAmount(cardNumber, cvc, expiryData, amount);
-     }
-   }
+    @Override
+    public void execute(DelegateExecution execution) {
+
+        // Extract variables from process instance
+        String cardNumber = (String) execution.getVariable("cardNumber");
+        String cvc = (String) execution.getVariable("cvc");
+        String expiryData = (String) execution.getVariable("expiryDate");
+        Double amount = (Double) execution.getVariable("openAmount");
+
+        // Execute business logic using the variables
+        service.chargeAmount(cardNumber, cvc, expiryData, amount);
+    }
+}
    ```
-5. Now, we can adjust the expressions on the sequence flows to use the data provided by the services. For the `yes`-Path, enter `${openAmount == 0}`. For the `no`-Path, enter `${openAmount > 0}`.
-6. Finally, we will have to adjust the Junit test. There, we need to register our delegate implementations as mocks (there is no spring context in a junit test by default). Add this method above your first test method:
+5. Now, we can adjust the expressions on the sequence flows to use the output data provided by the services. For the `Yes`-Path, enter `${openAmount == 0}`. For the `no`-Path, enter `${openAmount > 0}`.
+8. Restart your application and run the process by starting a process instance via the Desktop Modeler. Provide the following variables payload:
+  ```json
+  {
+    "customerId": { "value": "cust20" },
+    "orderTotal": { "value": 40, "type": "Double" },
+    "cardNumber": { "value": "1234 5678" },
+    "cvc": { "value": "123" },
+    "expiryDate": { "value": "08/26" }
+  }
+  ```
+Then, inspect the history of the instance in Cockpit.
+6. Try to run your existing unit test. It should not pass.
+6. We need to adjust it and register our Delegate implementations as mocks (as there is no Spring context in a JUnit test by default). Add the following method above your first test method:
    ```java
    @BeforeEach
    public void setup() {
@@ -96,12 +94,11 @@ In this lab, we will improve the variable handling by adding service tasks and t
      Mocks.register("chargeCreditCard", new ChargeCreditCardDelegate(new CreditCardService()));
    }
    ```
-   Then, add more variables to the map before starting the process and remove the line containing the `customerCredit`:
+   Then, add the missing variables to the map before starting the process and remove the line containing the `customerCredit`, which is now provided by the service:
    ```java
    variables.put("customerId", "cust20");
    variables.put("cardNumber", "1234 5678");
-   variables.put("CVC","123");
-   variables.put("expiryDate","09/26");
+   variables.put("CVC", "123");
+   variables.put("expiryDate", "09/26");
    ```
-7. Run your unit test and inspect the log output.
-8. Optional: Restart your application and run the process by starting a process from tasklist. Then, inspect the history of the process instance.
+7. Run your unit test again. It should pass.
