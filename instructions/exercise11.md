@@ -14,6 +14,18 @@ Create a new Maven project to implement an external task worker that replaces th
 4. Create a new Maven project.
 5. Open the pom.xml of your project and add the following dependencies:
     ```
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.camunda.bpm.springboot</groupId>
