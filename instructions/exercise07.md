@@ -1,49 +1,52 @@
-# Test the process end-to-end
+# Handle an exception
 
 ## Goal
 
-In this lab, we will write an end-to-end test for the order process and the payment process.
-
-## Short description
-
-* Create a new test method that starts the order process
-* Instead of mocking the **Invoke payment** task, let the real delegate be executed
-* Fix the process diagram so that the communication can happen
-* Adjust tests by adding manual job execution as required
+In this lab, you will throw an exception and then refactor the process to handle this as an incident. You will also test the behavior.
 
 ## Detailed steps
 
-1. Create a new test method `testEndToEnd`. Do not override the currently used mocks.
+1. Open the *CreditCardService* class.
+2. Inspect the `validateExpiryDate()` method. It checks if the supplied expiry date has the right length and is valid with regards to the current date.
+3. Use it to throw an exception if a credit card with an invalid expiry date is supposed to be charged. Add this snippet to the `chargeAmount()` method between the LOG statements.
     ```java
-    @Test
-    @Deployment(resources = {"order_process.bpmn","payment_process.bpmn"})
-    public void testEndToEnd(){
-      ProcessInstance processInstance = runtimeService().startProcessInstanceByKey(
-        "OrderProcess",
-        "Test 1",
-        withVariables("orderTotal", 30.00,
-          "customerId", "cust30",
-          "cardNumber", "1234 5678",
-          "CVC", "123",
-          "expiryDate", "09/26"
-        )
-      );
-      assertThat(processInstance).isEnded();
+    if (validateExpiryDate(expiryDate) == false) {
+      LOG.info("expiry date " + expiryDate + " is invalid");
+      throw new IllegalArgumentException("Expiry date invalid!");
     }
     ```
-2. In the payment process, select the start event and tick `Asynchronous continuations > Before`.
-3. Run all tests again. Some are failing. Why?
-4. For the failing tests, you will need to execute the job from the start event of the payment process. To do this, insert this at the right point:
-   ```java
-   assertThat(paymentProcess).isWaitingAt("StartEvent_Payment_Required");
-   execute(job());
-   ```
-5. For the end-to-end test, this will not work as we only have the process instance of the order process available. We need to query the process instance of the payment process before to do the assertion and execute the job:
-   ```java
-   assertThat(processInstance).isWaitingAt(<payment completed event id>);
-   ProcessInstance paymentProcess = processInstanceQuery().processDefinitionKey("PaymentProcess").singleResult();
-   assertThat(paymentProcess).isWaitingAt("StartEvent_Payment_Required");
-   execute(job());
-   assertThat(paymentProcess).isEnded();
-   ```
-6. Now, all tests should work again.
+4. In the process model, select the service task **Charge credit card** and tick `Asynchronous continuations > Before`.
+5. Insert another test in the unit test class:
+    ```java
+    @Test
+    @Deployment(resources = "payment_process.bpmn")
+    public void testInvalidExpiryDate(){
+      Mocks.register("paymentCompletion", (JavaDelegate) execution -> {});
+      
+      // Create a HashMap to put in variables for the process instance
+      Map<String, Object> variables = new HashMap<String, Object>();
+      variables.put("orderTotal", 30.00);
+      variables.put("customerId", "cust20");
+      variables.put("cardNumber", "1234 5678");
+      variables.put("cvc", "789");
+      variables.put("expiryDate", "09/26x");
+      
+      // Start process with Java API and variables
+      ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("PaymentProcess", variables);
+
+      execute(job());
+    
+      // try to execute credit card payment
+      assertThat(processInstance).isWaitingAt(findId("Charge credit card"));
+      RuntimeException exception = assertThrows(IllegalArgumentException.class, () -> execute(job()));
+      assertEquals(exception.getMessage(), "Expiry date invalid!");    
+    }
+    ```
+4. Run only this test. This should work.
+5. Run all tests. Some of them fail. Why?
+6. Correct the non-running tests by adding a manual job execution to pass the **Charge credit card** activity.
+    ```java
+    assertThat(processInstance).isWaitingAt("Activity_Charge_Credit_Card");
+    execute(job());
+    ```
+7. Now, all tests should be passing again.
