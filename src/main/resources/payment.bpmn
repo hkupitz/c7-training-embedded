@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_199sxyi" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.34.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
-  <bpmn:process id="PaymentProcess" isExecutable="true" camunda:historyTimeToLive="30">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_199sxyi" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.23.0">
+  <bpmn:process id="PaymentProcess" name="" isExecutable="true" camunda:historyTimeToLive="30">
     <bpmn:sequenceFlow id="Flow_0mfi4vt" sourceRef="StartEvent_1" targetRef="Activity_1t4szk3" />
     <bpmn:sequenceFlow id="Flow_0qy3hx0" sourceRef="Activity_1t4szk3" targetRef="Gateway_0sglth5" />
     <bpmn:exclusiveGateway id="Gateway_0sglth5" name="Credit sufficient?">
@@ -17,7 +17,7 @@
     <bpmn:sequenceFlow id="Flow_0g3ownw" name="No" sourceRef="Gateway_0sglth5" targetRef="Activity_1ali4qt" />
     <bpmn:sequenceFlow id="Flow_1wvfnh1" sourceRef="Activity_1ali4qt" targetRef="Gateway_1w12dtm" />
     <bpmn:sequenceFlow id="Flow_17lnpb7" sourceRef="Gateway_1w12dtm" targetRef="Event_1g5wddu" />
-    <bpmn:startEvent id="StartEvent_1" name="Payment requested" camunda:asyncAfter="true">
+    <bpmn:startEvent id="StartEvent_1" name="Payment requested">
       <bpmn:outgoing>Flow_0mfi4vt</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:task id="Activity_1t4szk3" name="Deduct credit">
