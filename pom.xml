@@ -89,6 +89,7 @@
       <version>${camunda.version}</version>
     </dependency>
 
+    <!-- Needs JDK support, ideally use OpenJDK Temurin 21 -->
     <dependency>
       <groupId>org.graalvm.js</groupId>
       <artifactId>js</artifactId>
