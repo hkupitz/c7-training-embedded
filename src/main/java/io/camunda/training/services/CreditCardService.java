@@ -33,10 +33,10 @@ public class CreditCardService {
   }
 
   public void chargeAmount(String cardNumber, String cvc, String expiryDate, Double amount) {
-    LOG.info("Charging card {} that expires on {} and has the CVC {} with an amount of {}",
+    LOG.info("charging card {} that expires on {} and has cvc {} with amount of {}",
       cardNumber, expiryDate, cvc, amount);
 
-    LOG.info("Payment completed");
+    LOG.info("payment completed");
   }
 
 }
