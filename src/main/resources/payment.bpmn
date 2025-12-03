@@ -55,7 +55,7 @@
       <bpmn:outgoing>Flow_0mgey93</bpmn:outgoing>
       <bpmn:compensateEventDefinition id="CompensateEventDefinition_09zf1eo" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:serviceTask id="Payment_RefundCreditTask" name="Refund credit" isForCompensation="true" camunda:delegateExpression="${refundCredit}" />
+    <bpmn:serviceTask id="Payment_RefundCreditTask" name="Refund credit" isForCompensation="true" camunda:type="external" camunda:topic="credit-refund" />
     <bpmn:association id="Association_0si13j3" associationDirection="One" sourceRef="Event_08w1cni" targetRef="Payment_RefundCreditTask" />
   </bpmn:process>
   <bpmn:message id="Message_2tu948g" name="paymentRequestMessage" />
@@ -104,21 +104,16 @@
       <bpmndi:BPMNShape id="Activity_1ht2w7i_di" bpmnElement="Payment_RefundCreditTask">
         <dc:Bounds x="360" y="350" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_0si13j3_di" bpmnElement="Association_0si13j3">
-        <di:waypoint x="320" y="228" />
-        <di:waypoint x="320" y="390" />
-        <di:waypoint x="360" y="390" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Event_1p7qhr0_di" bpmnElement="Event_0ki76ne">
-        <dc:Bounds x="572" y="292" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="605" y="335" width="89" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1doyxqu_di" bpmnElement="Event_08w1cni">
         <dc:Bounds x="302" y="192" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="335" y="230" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1p7qhr0_di" bpmnElement="Event_0ki76ne">
+        <dc:Bounds x="572" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="605" y="335" width="89" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0mfi4vt_di" bpmnElement="Flow_0mfi4vt">
@@ -161,6 +156,11 @@
       <bpmndi:BPMNEdge id="Flow_0mgey93_di" bpmnElement="Flow_0mgey93">
         <di:waypoint x="738" y="390" />
         <di:waypoint x="792" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0si13j3_di" bpmnElement="Association_0si13j3">
+        <di:waypoint x="320" y="228" />
+        <di:waypoint x="320" y="390" />
+        <di:waypoint x="360" y="390" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
