@@ -77,6 +77,7 @@ public class ProcessTests {
   @Test
   public void testInvalidExpiryDate(){
     Mocks.register("completePayment", (JavaDelegate) execution -> {});
+    Mocks.register("refundCredit", (JavaDelegate) execution -> {});
 
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("orderTotal", 30.00);
@@ -95,9 +96,11 @@ public class ProcessTests {
     assertThat(processInstance).isWaitingAt(findId("Charge credit card"));
     execute(job());
 
-    assertThat(processInstance).isEnded().hasPassed(findId("Charge credit card"))
-            .hasNotPassed("ID of Payment completed End Event")
-            .hasPassed(findId("Payment failed"));
+    assertThat(processInstance).isEnded()
+            .hasPassed(findId("Charge credit card"))
+            .hasNotPassed("Payment_PaymentCompletedEndEvent")
+            .hasPassed("Payment_InvalidExpiryDateCompensationEvent")
+            .hasPassed("Payment_RefundCreditTask");
   }
 
   @Test
