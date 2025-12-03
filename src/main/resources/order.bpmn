@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0u37fp4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.19.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
-  <bpmn:process id="OrderProcess" name="Order process" isExecutable="true" camunda:historyTimeToLive="180">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0u37fp4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.20.0">
+  <bpmn:process id="OrderProcess" name="Order Process" isExecutable="true" camunda:historyTimeToLive="30">
     <bpmn:startEvent id="StartEvent_1" name="Order received">
       <bpmn:outgoing>Flow_1horl5n</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_1horl5n" sourceRef="StartEvent_1" targetRef="Activity_0ztgeza" />
-    <bpmn:sendTask id="Activity_0ztgeza" name="Invoke payment" camunda:delegateExpression="#{paymentRequest}">
+    <bpmn:sendTask id="Activity_0ztgeza" name="Invoke payment" camunda:delegateExpression="${invokePayment}">
       <bpmn:incoming>Flow_1horl5n</bpmn:incoming>
       <bpmn:outgoing>Flow_1sosk3s</bpmn:outgoing>
     </bpmn:sendTask>
@@ -20,7 +20,7 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_13eh2tl" sourceRef="Event_0kanadz" targetRef="Event_0eei70i" />
   </bpmn:process>
-  <bpmn:message id="Message_1br09p2" name="paymentCompletedMessage" />
+  <bpmn:message id="Message_1br09p2" name="paymentCompletionMessage" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="OrderProcess">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
