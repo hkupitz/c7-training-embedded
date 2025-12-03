@@ -44,7 +44,7 @@
     <bpmn:sequenceFlow id="Flow_1ikjvhl" sourceRef="Event_0ki76ne" targetRef="Event_1xqrumn" />
     <bpmn:endEvent id="Event_1xqrumn" name="Payment failed">
       <bpmn:incoming>Flow_1ikjvhl</bpmn:incoming>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_09lxcru" camunda:delegateExpression="${paymentCompletion}" />
+      <bpmn:messageEventDefinition id="MessageEventDefinition_09lxcru" camunda:delegateExpression="${completePayment}" />
     </bpmn:endEvent>
   </bpmn:process>
   <bpmn:message id="Message_2tu948g" name="paymentRequestMessage" />
