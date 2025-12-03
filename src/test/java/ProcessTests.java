@@ -78,7 +78,7 @@ public class ProcessTests {
 
   @Test
   public void testInvalidExpiryDate(){
-    Mocks.register("paymentCompletion", (JavaDelegate) execution -> {});
+    Mocks.register("completePayment", (JavaDelegate) execution -> {});
 
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("orderTotal", 30.00);
