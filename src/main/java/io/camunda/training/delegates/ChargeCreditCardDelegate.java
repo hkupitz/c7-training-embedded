@@ -1,19 +1,18 @@
 package io.camunda.training.delegates;
 
 import io.camunda.training.services.CreditCardService;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-import net.bytebuddy.pool.TypePool.Resolution.Illegal;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@Named("chargeCreditCard")
+@Component("chargeCreditCard")
 public class ChargeCreditCardDelegate implements JavaDelegate {
 
   private final CreditCardService creditCardService;
 
-  @Inject
+  @Autowired
   public ChargeCreditCardDelegate(CreditCardService creditCardService) {
     this.creditCardService = creditCardService;
   }
@@ -31,7 +30,7 @@ public class ChargeCreditCardDelegate implements JavaDelegate {
     try {
       creditCardService.chargeAmount(cardNumber, cvc, expiryData, amount);
     } catch (IllegalArgumentException e) {
-      throw new BpmnError("chargingError", "We failed to charge credit card with card number " + cardNumber, e);
+      throw new BpmnError("chargingError", "Failed to charge credit card with card number " + cardNumber, e);
     }
   }
 }
