@@ -96,6 +96,9 @@ public class ProcessTests {
     assertThat(processInstance).isWaitingAt(findId("Charge credit card"));
     execute(job());
 
+    // Complete external compensation task
+    complete(externalTask());
+
     assertThat(processInstance).isEnded()
             .hasPassed(findId("Charge credit card"))
             .hasNotPassed("Payment_PaymentCompletedEndEvent")
