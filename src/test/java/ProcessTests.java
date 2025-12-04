@@ -18,7 +18,7 @@ import java.util.Map;
 
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.*;
 
-@Deployment(resources = {"payment.bpmn", "order.bpmn"})
+@Deployment(resources = {"payment.bpmn", "order.bpmn", "discount.dmn"})
 @ExtendWith(ProcessEngineCoverageExtension.class)
 public class ProcessTests {
 
@@ -113,7 +113,8 @@ public class ProcessTests {
     Mocks.register("invokePayment", (JavaDelegate) execution -> {
     });
 
-    ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("OrderProcess", "Order123");
+    ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("OrderProcess", "Order123",
+            withVariables("orderTotal", 40.00));
 
     runtimeService().correlateMessage("paymentCompletionMessage");
     assertThat(processInstance).isEnded();
