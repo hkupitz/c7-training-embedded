@@ -2,34 +2,44 @@
 
 ## Goal
 
-Add a Business Rule Task to the order process and calculate a discount to the order based on the amount.
+Add a Business Rule Task to the order process and calculate a discount for the order based on the amount.
 
-## Detailed steps
-### Decision Modeling
+## Detailed Steps
+### Decision modeling
 1. Open the Modeler and create a new DMN diagram.
-2. Name the decision table **Order discount** and set the Id of the decision table to **orderDiscount**.
-3. Enter the decision table and name the input column to **Order amount**. Set the input expression to **orderTotal**. Select **double** as type to match your amount variable type.
-4. Label the output column to Discount percentage and name the output as **discount**. Set the type to **integer**.
-5. Add some rules to discount some orders. An example which include less than, greater or equal to, along with ranges is shown below. Use Unique for the Hit Policy. The unique hit policy should only satisfy one row.
+2. Name the decision table **Order discount** and set the ID of the decision table to **OrderDiscount**.
+3. Also set a history cleanup time to live of **30**.
+4. Open the decision table and name the input column **Order total**. Set the input expression to **orderTotal**. Select **double** as type to match your amount variable type.
+5. Label the output column **Discount percentage** and set the output name to **discount**. Choose **integer** as the type.
+6. Add some rules to discount orders. An example is shown below. Use **Unique** as the hit policy.
 ![image](https://user-images.githubusercontent.com/5269168/195629261-549a3e16-dc5e-4555-b444-5177ad432a30.png)
-7. Save the decision table to your src/main/resources folder.
+7. Save the decision table as `discount.dmn` to your `src/main/resources` folder.
 
-### Process Modeling
-9. Open the Order process in the Modeler.
-10. Add a task to the order process to get the discount for the order amount before the payment invocation. Name the task **Get discount**. Change the task type to Business Rule Task.
-11. In the Implementation section of the property panel select DMN as Type. Add the Id of the decision table **orderDiscount** as Decision reference. Fill the Result variable with discount. Select **singleEntry** as value for Map decision result.
-12. Add a task between the Get discount and Invoke payment tasks to apply the discount to the order amount. Name the task **Apply discount**.
-13. Change the task type to Script Task. Open the Script section. Enter **javascript** as Format (the script language). Select Inline script as Type. Enter the Script
-```javascript
-orderTotal - (orderTotal * discount / 100)
-```
-14. Name the Result variable **discountedAmount**.
-15. To pay only the discounted amount, map the order total that is passed to the payment process with an Input mapping on the **Invoke payment** task. In the **paymentRequest** implementation, the local variable is preferred over the process variable. Select the Invoke payment task.
-16. Enter the Input section. Click on the + to add an input mapping. Enter **orderTotal** as the Local variable name. Select String or Expression as the Assignment type. Enter **${discountedAmount}** as the Value with the expression to access the result from the decision evaluation.
+### Process modeling
+8. Open the order process in the Modeler.
+9. Add a task to calculate the discount before the payment invocation. Name the task **Get discount**. Change the task type to **Business Rule Task**.
+10. In the Implementation section of the property panel select **DMN** as Type. Add the ID of the decision table **OrderDiscount** under **Decision reference**. Enter **discount** as the name of the **Result variable**. Select **singleEntry (TypedValue)** for **Map decision result**.
+11. Add a task between the "Get discount" and "Invoke payment" tasks to apply the discount. Name the task **Apply discount**.
+12. Change the task type to **Script Task**. Open the Script section. Enter **javascript** as Format (the script language). Select **Inline script** as Type. Insert the following script:
+    ```javascript
+    orderTotal - (orderTotal * discount / 100)
+    ```
+13. Name the Result variable **discountedAmount**.
+14. To pay only the discounted amount, map the order total that is passed to the payment process with an Input for the "Invoke payment" task. Select the "Invoke payment" task.
+15. Open the Input section. Click on the plus button (+) to add an input mapping. Enter **orderTotal** as the Local variable name. Select **String or Expression** as the Assignment type. Enter **${discountedAmount}** as the Value to map the result from the decision evaluation.
 
-### Acceptance Test
-17. Start a process instance.
-18. Open Cockpit and check the history of the order and the payment process. Is the discount applied correctly?
+### Acceptance test
+16. Start a process instance.
+17. Open Cockpit and check the history of the order and the payment process. Is the discount applied correctly?
 
-### Summary
-In this exercise you have modeled a DMN decision table to get a discount for a given order amount. You connected the decision table with a Business Rules Task to the order process. A new Script Task applied the discount to the order total. The discounted amount was mapped as with an input mapping as the orderTotal amount to the payment process.
+### JUnit tests
+18. Add the DMN file to the test class deployments:
+      ```java
+      @Deployment(resources = {"payment.bpmn", "order.bpmn", "discount.dmn"})
+      ```
+19. Add an `orderTotal` process variable to the `testOrderProcess` test case:
+      ```java
+      ProcessInstance processInstance = runtimeService().startProcessInstanceByKey("OrderProcess", "Order123",
+        withVariables("orderTotal", 40.00));
+      ```
+20. Run the tests. They should all pass.

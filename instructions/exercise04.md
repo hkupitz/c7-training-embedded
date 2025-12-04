@@ -11,7 +11,7 @@ In this lab, you will complete the process test coverage, so it becomes 100%.
    @Test
    public void testCreditSufficientPath() {
      
-      ...
+    ...
 
    }
    ```
@@ -22,13 +22,13 @@ In this lab, you will complete the process test coverage, so it becomes 100%.
 
    ProcessInstance processInstance = runtimeService()
        .createProcessInstanceByKey("PaymentProcess")
-       .startAfterActivity("Activity_Deduct_Amount")
+       .startAfterActivity(findId("Deduct credit"))
        .setVariables(variables)
        .execute();
 
    assertThat(processInstance)
        .isEnded()
-       .hasNotPassed("Activity_Charge_Credit_Card");
+       .hasNotPassed(findId("Charge credit card"));
    ```
 3. Run the test.
 4. Inspect the test coverage in the log and the generated report.

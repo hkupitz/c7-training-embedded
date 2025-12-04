@@ -6,7 +6,7 @@ The goal of this lab is to build your first JUnit test case for a BPMN 2.0 proce
 ## Detailed steps
 
 1. The BPMN file, in this case `payment.bpmn` already is on the classpath of your packaged process application and can be used for automated deployment and testing.
-2. Add the required dependencies to the pom.xml:
+2. Add the required dependencies to the pom.xml if they are not present yet:
    ```xml
     <dependency>
       <groupId>org.camunda.bpm</groupId>
@@ -23,7 +23,7 @@ The goal of this lab is to build your first JUnit test case for a BPMN 2.0 proce
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.27.3</version>
+      <version>3.27.6</version>
       <scope>test</scope>
     </dependency>
     <dependency>
