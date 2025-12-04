@@ -13,4 +13,3 @@
 * [Exercise 10](exercise10.md)
 * [Exercise 11](exercise11.md)
 * [Exercise 12](exercise12.md)
-* [Exercise 13](exercise13.md)
