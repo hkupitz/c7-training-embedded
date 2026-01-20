@@ -24,7 +24,7 @@ You create a new process model to handle orders. The payment process gets invoke
 
 ### Message sending
 
-4. Create a new delegate: `PaymentInvocationDelegate`.
+4. Create a new delegate: `InvokePaymentDelegate`.
     ```java
     package io.camunda.training.delegates;
 
