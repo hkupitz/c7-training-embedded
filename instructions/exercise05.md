@@ -19,7 +19,7 @@ You create a new process model to handle orders. The payment process gets invoke
     2. Process Name: **Order Process**
     3. History cleanup: Time to live 30
     4. Send Task implementation: Type - **Delegate expression**, Delegate expression - **${invokePayment}**
-    5. Message Intermediate Catch Event: Open the Message section in the properties panel and add a new "Global message reference". Enter **paymentCompletedMessage** as the Name.
+    5. Message Intermediate Catch Event: Open the Message section in the properties panel and add a new "Global message reference". Enter **paymentCompletionMessage** as the Name.
 3. Save the process model in the `src/main/resources` folder of your project. Name it **order.bpmn**.
 
 ### Message sending
