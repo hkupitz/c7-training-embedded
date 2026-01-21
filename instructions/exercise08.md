@@ -9,7 +9,7 @@ In this exercise you will handle a BPMN error that happened in the credit card s
 ### Process Modeling
 1. Open your payment process in the modeler. Attach a boundary event to the Charge credit card task. Transform the event to an Error Boundary Event. Add a label to the error event like **Invalid expiry date**.
 2. Open the property panel for the error boundary event and expand the Error section. Create a "Global error reference" and fill in the *Name* **Charging failed** and the *Code* **chargingError**.
-3. For simplicity, for now just add a message end event following up the error event. Name the message end event **Payment failed**. For the implementation, select **Delegate expression** and use the same delegate as in the other message end event: **${paymentCompletion}**.
+3. For simplicity, for now just add a message end event following up the error event. Name the message end event **Payment failed**. For the implementation, select **Delegate expression** and use the same delegate as in the other message end event: **${completePayment}**.
 
 ### Updating the Charge Credit Card Delegate
 4. Open the **ChargeCreditCardDelegate**.
