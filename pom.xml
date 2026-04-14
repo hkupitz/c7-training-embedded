@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/amven..00.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/amven..00.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -12,8 +12,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-    <camunda.version>7.24.0-ee</camunda.version>
-    <spring.boot.version>3.5.7</spring.boot.version>
+    <camunda.version>7.24.7-ee</camunda.version>
+    <spring.boot.version>3.5.13</spring.boot.version>
   </properties>
 
   <repositories>
@@ -89,16 +89,40 @@
       <version>${camunda.version}</version>
     </dependency>
 
-    <!-- Needs JDK support, ideally use OpenJDK Temurin 21 -->
+    <!-- GraalJS - Compatible with JDK 17 -->
+    <!--<dependency>
+          <groupId>org.graalvm.polyglot</groupId>
+          <artifactId>polyglot</artifactId>
+          <version>23.0.6</version>
+        </dependency>
+        <dependency>
+          <groupId>org.graalvm.polyglot</groupId>
+          <artifactId>js-community</artifactId>
+          <version>23.0.6</version>
+          <type>pom</type>
+        </dependency>
+        <dependency>
+          <groupId>org.graalvm.js</groupId>
+          <artifactId>js-scriptengine</artifactId>
+          <version>23.0.6</version>
+        </dependency>-->
+
+    <!-- GraalJS — compatible with JDK 21+ -->
     <dependency>
-      <groupId>org.graalvm.js</groupId>
-      <artifactId>js</artifactId>
-      <version>21.3.12</version>
+      <groupId>org.graalvm.polyglot</groupId>
+      <artifactId>polyglot</artifactId>
+      <version>24.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.graalvm.polyglot</groupId>
+      <artifactId>js-community</artifactId>
+      <version>24.1.2</version>
+      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>org.graalvm.js</groupId>
       <artifactId>js-scriptengine</artifactId>
-      <version>21.3.12</version>
+      <version>24.1.2</version>
     </dependency>
 
     <!-- Your own dependencies -->
